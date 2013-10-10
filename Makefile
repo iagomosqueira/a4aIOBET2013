@@ -4,10 +4,10 @@ R_HOME=/usr/local
 all: $(PDFS)
 
 clean:
-	rm -rf *.tex *.bbl *.blg *.aux *.out *.log *.spl *.md figure/ cache/
+	rm -rf *.tex *.bbl *.blg *.aux *.out *.log *.spl *.md
 
 cleanall: clean
-	rm $(PDFS)
+	rm $(PDFS) figure/ cache/
 
 %.pdf: %.md
 	pandoc -s -S --biblio $*.bib -o $*.pdf $*.md

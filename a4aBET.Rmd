@@ -6,15 +6,16 @@
 [^aff]: European Commission, Joint Research Center, IPSC/Maritime Affairs Unit, FISHREG, Via E. Fermi 2749, 21027 Ispra VA, Italy
 [^contact]: Contact Author: iago.mosqueira-sanchez@jrc.ec.europa.eu
 
-```{r, setup, echo=FALSE, results='hide', message=FALSE}
+```{r, setup, echo=FALSE, results='hide', message=FALSE, cache=FALSE, warnings=FALSE}
 library(knitr)
-opts_chunk$set(dev='pdf', cache=TRUE, fig.width=4, fig.height=4, warnings=FALSE)
+opts_chunk$set(dev='pdf', fig.width=4, fig.height=4, warnings=FALSE, cache=TRUE, echo=FALSE)
 options(width=50)
 ```
 
-```{r, pkgs, echo=FALSE, results='hide', message=FALSE}
+```{r, pkgs, echo=FALSE, results='hide', message=FALSE, warnings=FALSE, cache=FALSE}
 library(FLa4a)
 library(ggplotFL)
+library(pander)
 theme_set(theme_bw())
 set.seed(1423)
 ```
@@ -49,17 +50,9 @@ ggplot(data=catch(bet)/1000, aes(year, data)) + geom_point() + geom_line() + yla
 # Model structure and assumptions
 
 ## Fixed parameters
-
------------------
- Parameter Value
----------- ------
- M         0.8
-
- M         0.4
------------------
-
-Table: PARAMS
-
+```{r, fixed1, results='asis'}
+pandoc.table(data.frame(Parameter=c('M',NA), Ages=c('0-1', '2-9'), Value=c(0.8, 0.4)), alignment='center')
+```
 
 ## Estimated parameters
 
