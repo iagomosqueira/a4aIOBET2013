@@ -1,0 +1,85 @@
+% Investigating the stock status of Indian Ocean Bigeye tuna using the a4a statistical catch-at-age assessment method.
+% Iago Mosqueira$^\dagger$[^contact]; Colin P. Millar[^aff]
+% October 2013
+
+
+[^aff]: European Commission, Joint Research Center, IPSC/Maritime Affairs Unit, FISHREG, Via E. Fermi 2749, 21027 Ispra VA, Italy
+[^contact]: Contact Author: iago.mosqueira-sanchez@jrc.ec.europa.eu
+
+```{r, setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+opts_chunk$set(dev='pdf', cache=TRUE, fig.width=4, fig.height=4, warnings=FALSE)
+options(width=50)
+```
+
+```{r, pkgs, echo=FALSE, results='hide', message=FALSE}
+library(FLa4a)
+library(ggplotFL)
+theme_set(theme_bw())
+set.seed(1423)
+```
+
+# Introduction
+
+A recently developed statistical catch-at-age stock assessment method, designed for evaluating the status of stocks with intermediate data quality, is applied here to Indian Ocean bigeye tuna. The method provides huge flexibility for the rapid evaluation of the effects in parameter estimates and uncertainty of different submodels for fishing mortality-at-age (the F model), survey catchability-at-age (the Q model), stock recruitment (the R model) and observation variance (the V model).
+
+The model does not attempt to substitute more complex stock assessments that make use of all sources of data, like tagging, but to provide a tool for rapid exploration of the influence of different assumptions and data sources. This capability is achieved by combining a powerful optimization engine (ADMB) with an intuitive user interface usaing linear models as expressed in the R language.
+
+# The a4a stock assessment model
+
+FLR [@Kell2007]
+
+# Data
+
+```{r, data, echo=FALSE, results='hide', message=FALSE}
+load('data/bet_iotc_2011.RData')
+```
+
+## Catch-at-age
+
+The catch-at-age dataset made available by the IOTC Secretariat \footnote{\url{http://iotc.org/files/proceedings/2013/wptt/BET_ASPMv2.zip}, downloaded 27/09/2013} was used.
+
+```{r, nc, echo=FALSE, tidy=TRUE, fig.cap="Total catch series for Indian Ocean bigeye, 1950-2012.", fig.width=6, fig.height=3}
+ggplot(data=catch(bet)/1000, aes(year, data)) + geom_point() + geom_line() + ylab("Catch (Kt)") + xlab("")
+```
+
+
+## CPUE index
+
+# Model structure and assumptions
+
+## Fixed parameters
+
+-----------------
+ Parameter Value
+---------- ------
+ M         0.8
+
+ M         0.4
+-----------------
+
+Table: PARAMS
+
+
+## Estimated parameters
+
+# Model runs
+
+## Simulation of catchability fitting
+
+# Results
+
+## Population trajectories
+
+## Reference points
+
+## Residual diagnostics
+
+# Discussion
+
+# Appendix I: a4a model population dynamics
+
+# Appendix II: Code of final run
+
+# References
+
