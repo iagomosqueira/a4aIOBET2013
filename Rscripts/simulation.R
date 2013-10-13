@@ -1,6 +1,8 @@
 
 # simulation set up
 
+nsim <- 100
+
 years <- 1990:2010
 ages <- 1:10
 
@@ -59,6 +61,10 @@ n[nages,-1] <- log( exp(n[nages,-1]) + exp(n[nages,-nyears] - Z[i-1, -nyears]) )
 catch <- log(Fm) - log(Z) + log(1 - exp(-Z)) + n
 index <- log( colSums(Wt * Qm * exp(n) * exp(-Z*pz)) )
 
+
+simout <- vector("list", nsim)
+for (s. in 1:nsim) {
+
 ## make observations
 catchobs <- catch + rnorm(length(catch), 0, exp(lsigc))
 indexobs <- index + rnorm(length(index), 0, exp(lsigi))
@@ -101,11 +107,13 @@ sim <- list(fpar = bf, qpar = bq, vpar = c(lsigc, lsigi), ny1par = bn1, rpar = b
 
 summ <- cbind.data.frame(sim = unlist(sim), est = unlist(est))
 summ $ diff <- with(summ, (est - sim))
-summ $ sdiff <- with(summ, abs(diff / sim) )
+summ $ sdiff <- with(summ, diff / abs(sim) )
+summ $ parname <- rownames(summ)
 
-print(summ)
+simout[[s.]] <- summ
+}
 
-
+boxplot(sdiff ~ parname, data = do.call(rbind, simout), type = "g")
 
 
 
