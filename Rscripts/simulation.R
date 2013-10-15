@@ -73,10 +73,13 @@ summ $ diff <- with(summ, (est - sim))
 summ $ sdiff <- 100 * with(summ, diff / abs(sim))
 summ $ parname <- rownames(summ)
 summ $ type <- sapply(strsplit(summ $ parname, ":"), "[", 1)
+rownames(summ) <- NULL
 
 simout[[s.]] <- summ
 }
 
+# summarise sims
+sims <- do.call(rbind, simout)
 
 
 

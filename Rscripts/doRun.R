@@ -5,18 +5,25 @@
 
 # select a setup option
 
-source("simpleSetup.R")
-#source("BETSetup.R")
+#source("simpleSetup.R")
+source("BETSetup.R")
 
-nsim <- 100
-biomass <- TRUE
+nsim <- 1000
+biomass <- FALSE
 
 # run simulations
 source("simulation.R")
 
-# summarise sims
-sims <- do.call(rbind, simout)
+head(sims)
 
-print(bwplot(sdiff ~ parname | type, data = sims, scales = list(relation = "free")))
+#print(bwplot(sdiff ~ parname | type, data = sims, scales = list(relation = "free")))
+
+# plot catchability estimates
+qest <- array(Xq %*% matrix(subset(sims, type == "qMod") $ est, length(bq)), dim = c(nages, nyears, nsim))[,1,]
+qsim <- matrix(Xq %*% bq, nages, nyears)[,1]
+
+plot(ages, qsim, type = "l", ylim = range(qest, qsim))
+apply(qest, 2, lines, x = ages, col = grey(0.8))
+
 
 

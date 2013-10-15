@@ -30,7 +30,7 @@ data <- expand.grid(age = ages, year = years)
 fmodel <- ~ s(age, k = 4) + s(year, k = 10)
 qmodel <- list(~ s(age, k = 4))
 srmodel <- ~ factor(year)
-n1model <- ~ factor(age)
+n1model <- ~ 1
 
 # design matrices
 require(FLa4a)
