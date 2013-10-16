@@ -83,3 +83,36 @@ range(japll)[c("startf","endf")] <- 0.5
 # SAVE file
 
 save(bet, japll, file='bet_iotc_2011.RData')
+
+
+# LOAD SS3 results for F and N
+
+library(r4ss)
+
+res <- SS_output(dir='./', covar=FALSE, readwt=FALSE, NoCompOK=TRUE, forecast=FALSE)
+
+dmns <- list(age=1:10)
+
+# EXTRACT Z
+Z <- res$Z_at_age
+# EXTRACT M
+M <- res$M_at_age
+# CALCULATE F
+F <- Z[,-c(1,2,3)] - M[,-c(1,2,3)]
+# EXTRACT first row and column
+F <- F[c(TRUE, FALSE, FALSE, FALSE), c(TRUE, FALSE, FALSE, FALSE)]
+harvest <- FLQuant(t(F[,-11])*4, dimnames=list(age=1:10, year=1952:2011))
+
+# EXTRACT natage
+N <- res$natage
+# GET beginning of year abundances
+N <- N[N[,"Beg/Mid"]=="B", c('Yr', as.character(0:40))]
+# KEEP only first season by year
+N <- N[c(TRUE, FALSE, FALSE, FALSE),]
+# SUM every four ages
+for(i in seq(1, 37, 4))
+	N[,as.character(i)]	<-  apply(N[,as.character(i+seq(0, 3))], 1, sum)
+N <- N[, as.character(seq(1, 37, 4))]
+stock.n <- FLQuant(t(N), dimnames=list(age=1:10, year=1952:2012))
+
+save(stock.n, harvest, file="betSS3.RData")
