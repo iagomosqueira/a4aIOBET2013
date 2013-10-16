@@ -1,5 +1,5 @@
 % Investigating the stock status of Indian Ocean Bigeye tuna using the a4a statistical catch-at-age assessment method.
-% Iago Mosqueira$^\dagger$[^contact]; Colin P. Millar[^aff]
+% Iago Mosqueira[^contact]; Colin P. Millar[^aff]
 % October 2013
 
 
@@ -14,11 +14,13 @@ options(width=50)
 
 ```{r, pkgs, echo=FALSE, results='hide', message=FALSE, warnings=FALSE}
 library(FLa4a)
-library(ggplotFL)
 library(pander)
-theme_set(theme_bw())
 set.seed(1423)
 ```
+
+% library(ggplotFL)
+% theme_set(theme_bw())
+
 
 # Introduction
 
@@ -28,6 +30,37 @@ The model does not attempt to substitute more complex stock assessments that mak
 
 # The a4a stock assessment model
 
+The a4a assessment model is an age structured model based on the Baranov catch equation and an assumption of constant mortality rates throughout the year. The numbers in the population at age $a$ and year $y$, $N_{ay}$, are modelled in terms of the initial age structure $N_{-a_{0},y_0}$, recruitment $N_{a_0,y}$ and fishing mortality $F_{ay}$.  Natural mortality, $M_{ay}$ is assumed known.  The full  matrix of numbers at age can be written in terms of these quantities:
+
+$$ N_{ay}  = \left\{ \begin{array}{ll} N_{a_0,y} \phantom{\exp\left\{-\displaystyle \sum_{a'=a_0}^{a-1} Z_{a',y-a'+a_0}\right\}} & a = a_0 \\ 
+                                       N_{a_0,y-a+a_0} \, \exp\left\{-\displaystyle \sum_{a'=a_0}^{a-1} Z_{a',y-a'+a_0}\right\} & a > a_0 \text{ and } a - a_0 > y - y_0 \\  
+                                       N_{a-y+y_0,y_0} \, \exp\left\{-\displaystyle \sum_{a'=a-y+y_0}^{a-1} Z_{a',y-a'+a_0}\right\} & a > a_0 \text{ and } a - a_0 \leq y - y_0 \end{array} \right. $$
+
+where $Z_{ay} = F_{ay} + M_{ay}$. In the case of a plus group the numbers in the oldest age class are given by the equation above plus additional individuals coming from the previous years' cohort.
+
+The same quantities allow the prediction of catches and it is assumed that the log of the observed catches are independently normally distributed about the log of the predicted catches
+
+$$ \exp\{ E[ \log C_{ay} ] \} = \frac{F_{ay}}{Z_{ay}}(1 - \exp\{-Z_{ay}\}) N_{ay} $$
+
+An additional quantity giving the catchability of a survey, $Q_{ay}$, allows us predict survey indices, and as with catches is it assumed that the log of the observed survey indices are independently normally distributed about the log of the predicted indices.  Indices may be observations of abundance at age:
+
+$$ \exp\{ E[ \log I_{ays} ] \} = Q_{ays} N_{ay} $$
+
+or of biomass
+
+$$ \exp\{ E[ \log B_{ys} ] \} = \sum_a Q_{ays} N_{ay} W_{ay} $$
+
+in which $W_{ay}$ is the stock weight at age and year. The variance of the relationships are allowed to vary by age. These equations, defined by the quantities, $N_{a_0,y}$, $N_{-a_{0},y_0}$, $F_{ay}$ and $Q_{ays}$, provide the full description of the stock.
+
+## recruitment modelling
+
+It is possible to provide some internal structure to the population model in the form of a stock recruit relationship in which recruits are considered to be related to previous biomass
+
+$$ \exp\{ E[ \log N_{a_0,y} ] \} = f\left( \sum_a N_{ay} W_{ay} m_{ay} \right) $$
+
+where $m$ is the maturity, assumed known, and $f(.)$ is a function such as the ricker or beverton and holt stock rectuit relationship.
+
+![Simulation results for a big eye Tuna like stock with age based indices.](figures/run1.pdf "Title")
 
 # Data
 
