@@ -14,12 +14,12 @@ options(width=50)
 
 ```{r, pkgs, echo=FALSE, results='hide', message=FALSE, warnings=FALSE}
 library(FLa4a)
+library(ggplotFL)
+theme_set(theme_bw())
 library(pander)
 set.seed(1423)
 ```
 
-% library(ggplotFL)
-% theme_set(theme_bw())
 
 
 # Introduction
@@ -64,7 +64,7 @@ where $m$ is the maturity, assumed known, and $f(.)$ is a function such as the r
 
 ## Implementation
 
-The models presented above are the basis for many stock assessment models. Often the difference between models is the way in which the individual quantities are modelled.  Catchability is often modelled as a parametric function such as a scaled logistic or a scaled double normal. In a4a linear and additive formulas on the log scale are used in place of parametric forms. To give a concrete example, to model a seperable fishing mortality in a4a the user specifies log F $\sim$ age + year.  Where '$\sim$' should be read 'is modelled as', and, here, age and year are catagorical variables. Splines may also be used to model selectivity over age and/or year, for example a seperable model with fewer parameters than the aforementioned is log F $\sim$ s(age) + s(year). Similarly catchability at age can be modelled using splines: log F $\sim$ s(age), fits a spline for survey catchability.
+The models presented above are the basis for many stock assessment models. Often the difference between models is the way in which the individual quantities are modelled.  Catchability is often modelled as a parametric function such as a scaled logistic or a scaled double normal. In a4a linear and additive formulas on the log scale are used in place of parametric forms. To give a concrete example, to model a seperable fishing mortality in a4a the user specifies log F $\sim$ age + year.  Where '$\sim$' should be read 'is modelled as', and, here, age and year are catagorical variables. Splines may also be used to model selectivity over age and/or year, for example a seperable model with fewer parameters than the aforementioned is log F $\sim$ s(age) + s(year). Similarly catchability at age can be modelled using splines: log Q $\sim$ s(age), fits a spline for survey catchability.
 
 Splines are the main tool for reducing parameterisation in a4a. For reasons of efficiency the use of random effects have been avoided and the user is required to specify the degrees of freedom of the splines.
 
@@ -74,7 +74,7 @@ Splines are the main tool for reducing parameterisation in a4a. For reasons of e
 load('data/bet_iotc_2011.RData')
 ```
 
-The a4a stock assessment model is an age-based model, and requires a matrix of catch-at-age information that includes all fleets and areas, on a yearly time step. This is then combined with an abundance index, in this case an standardized total catch-per-unit-effort series for the Japanese longline fleet [@IOTC-2013-WPTT15-25].
+The a4a stock assessment model is an age-based model, and requires a matrix of catch-at-age information that includes all fleets and areas, on a yearly time step. This is then combined with an abundance index, in this case a standardized total catch-per-unit-effort series for the Japanese longline fleet [@IOTC-2013-WPTT15-25].
 
 ## Catch-at-age
 
@@ -103,6 +103,18 @@ ggplot(data=catch.wt(bet)[,1], aes(age, data)) + geom_line() + ylab("Weight (kg)
 # Model runs
 
 ## Simulation of catchability fitting
+
+The use of a biomass survey in FLa4a as an observation of stock abundance is being used for the first time on BET. In order to investigate the validity of this in the context of the a4a assessment model, a small simulation study has been conducted. The details of the simulation are as follows
+
+- model settings were selected that were thought to be appropriate for approximating BET dynamics. A seperable model for F, with splines for both age and year. Independent recruitment for each year, and the intitial age structure is estimated seperately for each age. The observation variance is constant accross age and year with a seperate variance for the catch and survey.
+
+- The estimated F-at-age and N-at-age from a recent SS3 assessment of BET (REF langley) was used to fit the F and N models, variance was fixed corresponding to 10\% cv for both the catch and survey. Also using (REF langley) three survey catchability forms were defined: "domed", "logistic", and "flat".
+
+- given the parameter values defined in the previous point, 1000 data sets were simulated and the a4a model fitted to each. The model setup in the fitting was exactly that used to simulate the data.
+
+- finally the model estimates of catchability at age, recruitment, Fbar and F-at-age in the final year are plotted along with the values used to simulate the observations.
+
+The purpose of the simulation is to test that, in the case where we have the model right, how well are the model 
 
 # Results
 
