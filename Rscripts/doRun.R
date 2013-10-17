@@ -5,11 +5,17 @@
 
 # select a setup option
 
+
+
 #source("simpleSetup.R")
+qtype <- "dome"
+#qtype <- "logistic"
+#qtype <- "flat"
+
 source("BETSetup.R")
 
-nsim <- 1000
-biomass <- FALSE
+nsim <- 10
+biomass <- TRUE
 
 # run simulations
 source("simulation.R")
@@ -18,7 +24,6 @@ head(sims)
 
 #print(bwplot(sdiff ~ parname | type, data = sims, scales = list(relation = "free")))
 
-load("01.22.Wednesday.RData")
 
 require(FLa4a)
 

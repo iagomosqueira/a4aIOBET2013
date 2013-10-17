@@ -14,14 +14,15 @@ for (i in 2:nages) {
   n[i,-1] <- n[i-1, -nyears] - Z[i-1, -nyears]
 }
 # do plus group
-n[nages,-1] <- log( exp(n[nages,-1]) + exp(n[nages,-nyears] - Z[i-1, -nyears]) )
+#for (j in 2:nyears) n[nages,j] <- log( exp(n[nages,j]) + exp(n[nages,j-1] - Z[nages, j-1]) )
+
 
 # construct catches and indices
 sim.catch <- log(Fm) - log(Z) + log(1 - exp(-Z)) + n
 if (biomass) {
   sim.index <- log( colSums(Wt * Qm * exp(n) * exp(-Z*pz)) )
 } else {
-  sim.index <- log(Qm) + n
+  sim.index <- log(Qm) + n - Z*pz
 }
 
 simout <- vector("list", nsim)
@@ -45,12 +46,13 @@ stock <- FLStock(
          )
 catch(stock) <- computeCatch(stock)
 range(stock)[c("minfbar","maxfbar")] <- fbar
+range(stock)["plusgroup"] <- NA 
 
 indices <- FLIndices(simsurv = 
              FLIndex(
                index = FLQuant(exp(indexobs), dimnames=list(age= if (biomass) "all" else ages, year=years))
              ))
-range(indices[[1]])[c("startf","endf")] <- 0.5
+range(indices[[1]])[c("startf","endf")] <- pz
 
 ## fit model
 vmodel = list(~1, ~1)

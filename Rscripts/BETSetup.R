@@ -1,10 +1,14 @@
 
 require(FLCore)
 load('../data/bet_iotc_2011.RData')
-
-# CHANGE Fully selected ages
 range(bet)[c("minfbar","maxfbar")] <- c(4,9)
 units(harvest(bet)) <- "f"
+
+
+load('../data/betSS3.RData')
+
+
+bet <- window(bet, 1952, 2011)
 
 dms <- dims(bet)
 
@@ -15,22 +19,30 @@ nages <- length(ages)
 nyears <- length(years)
 
 # for now make up some F values and N values
-harvest(bet) <- c(outer(c(scale(c(.1,.1,.2,.2,.3,.35,.4, 0.45, .3, .2), center=FALSE)), 
-                      c(rep(0.01, 32), seq(0.01, 0.15, length = 15), seq(0.15, 0.1, length = 15))))
+harvest[harvest == 0] <- min(harvest[harvest > 0])
+harvest(bet) <- c(harvest)
 
-stock.n(bet)[1,] <- 100000
-stock.n(bet)[-1,1] <- 1000
+stock.n(bet) <- c(stock.n[,-ncol(stock.n)])
 
-qest <- rep(1e-5 * c(.1,.1,.9,1,1,.9,.5, 0.3, .3, .2), nyears)
+# define a set of catchability ogives for the biomass survey
+if (qtype == "dome") {
+  qest <- rep(1e-5 * c(.1,.1,.9,1,1,.9,.5, 0.3, .3, .2), nyears)
+} else if (qtype == "logistic") {
+  qest <- rep(1e-5 * c(.1,.1,.4,.5,.6,.9,1, 1, 1, 1), nyears)
+} else {
+  qest <- rep(1e-5, nyears * nages)  
+}
+
 
 # model data
 data <- expand.grid(age = ages, year = years)
 
 # model formulas
-fmodel <- ~ s(age, k = 4) + s(year, k = 10)
-qmodel <- list(~ s(age, k = 4))
+fmodel <- ~ s(age, k = 4) + s(year, k = 20)
 srmodel <- ~ factor(year)
-n1model <- ~ 1
+n1model <- ~ factor(age)
+qmodel <- list(~ s(age, k=4))
+if (biomass) qmodel <- list(~ 1)
 
 # design matrices
 require(FLa4a)
@@ -54,4 +66,6 @@ M <- matrix(c(m(bet)[,1]), nages, nyears)
 Wt <- matrix(c(stock.wt(bet)[,1]), nages, nyears)
 Mat <- matrix(c(mat(bet)[,1]), nages, nyears)
 pz <- 0.6
+fbar <- c(4,6)
+
 
