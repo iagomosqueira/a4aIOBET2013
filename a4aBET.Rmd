@@ -1,5 +1,5 @@
-% Investigating the stock status of Indian Ocean Bigeye tuna using the a4a statistical catch-at-age assessment method.
-% Iago Mosqueira[^contact]; Colin P. Millar[^aff]
+% Assessing the ability to estimate stock status of Indian Ocean Bigeye tuna using the a4a statistical catch-at-age assessment method.
+% Iago Mosqueira$^\dagger$[^contact]; Colin P. Millar[^aff]
 % October 2013
 
 
@@ -20,13 +20,13 @@ library(pander)
 set.seed(1423)
 ```
 
-
-
 # Introduction
 
 A recently developed statistical catch-at-age stock assessment method, a4a, designed for evaluating the status of stocks with intermediate data quality, is applied here to Indian Ocean bigeye tuna. The method provides huge flexibility for the rapid evaluation of the effects in parameter estimates and uncertainty of different submodels for fishing mortality-at-age (the F model), CPUE catchability-at-age (the Q model), stock recruitment (the R model) and observation variance (the V model).
 
 The model does not attempt to substitute more complex stock assessments that make use of all sources of data, including tagging, but to provide a tool for rapid exploration of the influence of different assumptions and data sources. This capability is achieved by combining a powerful optimization engine (ADMB) with an intuitive user interface using linear models as expressed in the R language. The model is implemented as part of the FLR framework [@Kell2007], and thus can make use of the available tools for estimation of reference points, projections under different scenarios, plotting and diagnostics.
+
+We report on a simulation exercise that explored the capacity of a relatively simple statistical catch-ata-age model to estimate accurately the stock status and productivity levels of Indian Ocean bigeye given the information content of the main sources of data: catch-at-age and longline CPUE series. We then use the results of this analysis to choose among a range of possible implementation of the a4a model for this stocks one that is able to provide robust estimates of management quantities.
 
 # The a4a stock assessment model
 
@@ -68,13 +68,14 @@ The models presented above are the basis for many stock assessment models. Often
 
 Splines are the main tool for reducing parameterisation in a4a. For reasons of efficiency the use of random effects have been avoided and the user is required to specify the degrees of freedom of the splines.
 
+
 # Data
 
 ```{r, data, echo=FALSE, results='hide', message=FALSE}
 load('data/bet_iotc_2011.RData')
 ```
 
-The a4a stock assessment model is an age-based model, and requires a matrix of catch-at-age information that includes all fleets and areas, on a yearly time step. This is then combined with an abundance index, in this case a standardized total catch-per-unit-effort series for the Japanese longline fleet [@IOTC-2013-WPTT15-25].
+The a4a stock assessment model is an age-based model, and requires a matrix of catch-at-age information that includes all fleets and areas, on a yearly time step. This is then combined with an abundance index, in this case an standardized total catch-per-unit-effort series for the Japanese longline fleet [@IOTC-2013-WPTT15-25].
 
 ## Catch-at-age
 
@@ -99,7 +100,6 @@ ggplot(data=catch.wt(bet)[,1], aes(age, data)) + geom_line() + ylab("Weight (kg)
 ```
 
 ## Estimated parameters
-
 # Model runs
 
 ## Simulation of catchability fitting
@@ -114,15 +114,19 @@ The use of a biomass survey in FLa4a as an observation of stock abundance is bei
 
 - finally the model estimates of catchability at age, recruitment, Fbar and F-at-age in the final year are plotted along with the values used to simulate the observations.
 
-The purpose of the simulation is to test that, in the case where we have the model right, how well are the model 
+# Simulation of parameter fitting
 
 # Results
 
-## Population trajectories
+## Estimation of submodel parameters
 
-## Reference points
+## Robust model runs
 
-## Residual diagnostics
+### Population trajectories
+
+### Reference points
+
+### Residual diagnostics
 
 # Discussion
 
@@ -131,4 +135,7 @@ The purpose of the simulation is to test that, in the case where we have the mod
 # Appendix II: Code of final run
 
 # References
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
 
