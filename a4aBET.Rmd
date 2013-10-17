@@ -11,13 +11,19 @@ opts_chunk$set(dev='pdf', fig.width=4, fig.height=4, warning=FALSE, cache=TRUE, 
 options(width=50)
 ```
 
-```{r, pkgs, echo=FALSE, results='hide', message=FALSE}
+```{r, pkgs, echo=FALSE, results='hide', message=FALSE,cache=FALSE}
 library(FLa4a)
 library(ggplotFL)
 theme_set(theme_bw())
 library(pander)
 set.seed(1423)
 ```
+
+```{r, functions, echo=FALSE, results='hide', message=FALSE, cache=FALSE}
+source("Rscripts/setupSimulation.R")
+source("Rscripts/simulation.R")
+```
+
 
 # Introduction
 
@@ -51,15 +57,13 @@ $$ \exp\{ E[ \log B_{ys} ] \} = \sum_a Q_{ays} N_{ay} W_{ay} $$
 
 in which $W_{ay}$ is the stock weight at age and year. The variance of the relationships are allowed to vary by age. These equations, defined by the quantities, $N_{a_0,y}$, $N_{-a_{0},y_0}$, $F_{ay}$ and $Q_{ays}$, provide the full description of the stock.
 
-## recruitment modelling
+## Recruitment modelling
 
 It is possible to provide some internal structure to the population model in the form of a stock recruit relationship in which recruits are considered to be related to previous biomass
 
 $$ \exp\{ E[ \log N_{a_0,y} ] \} = f\left( \sum_a N_{a,y-1} W_{a,y-1} m_{a,y-1}, \, \theta \right) $$
 
 where $m$ is the maturity, assumed known, and $f(.)$ is a function such as the ricker or beverton and holt stock rectuit relationship with parameters $\theta$.
-
-![Simulation results for a big eye Tuna like stock with age based indices.](figures/run1.pdf "Title")
 
 ## Implementation
 
@@ -99,7 +103,24 @@ ggplot(data=catch.wt(bet)[,1], aes(age, data)) + geom_line() + ylab("Weight (kg)
 ```
 
 ## Estimated parameters
-# Simulation of parameter fitting
+
+All models presented in this document use the following model structures
+
+- log F $\sim$ s(age, k=4) + s(year, k=20)
+- log R $\sim$ factor(year)
+- log N$_{y_0}$ $\sim$ factor(age)
+
+There is one survey, which is a biomass survey.  It has not possible to estimate the catchability at age with the BET data or the simulated BET data and so only a intercept only model is possible. It is, however, possible to include a fixed selectivity ogive as an offset so survey catchability models of the form
+
+- log Q $\sim$ 1 + offset(log selectivity)
+
+were used.  Specifically we tested two selectivity forms 1) flat and 2) logistic where the a$_50$ was set to age 4 and the a$_90$ was set to age 5.
+
+Additionally a seperate observation variance was estimated for the catches and survey indices.
+
+# Model runs
+
+## Simulation to test the estimation of survey catchability
 
 The use of a biomass survey in FLa4a as an observation of stock abundance is being used for the first time on BET. In order to investigate the validity of this in the context of the a4a assessment model, a small simulation study has been conducted. The details of the simulation are as follows
 
@@ -111,13 +132,30 @@ The use of a biomass survey in FLa4a as an observation of stock abundance is bei
 
 - finally the model estimates of catchability at age, recruitment, Fbar and F-at-age in the final year are plotted along with the values used to simulate the observations.
 
-# Model runs
+## Base run
 
 # Results
 
-## Estimation of submodel parameters
+## Simulation to test the estimation of survey catchability
 
-## Robust model run
+```{r, simulation, echo=FALSE, results='hide', message=FALSE, cache=FALSE}
+range(bet)[c("minfbar","maxfbar")] <- c(4,9)
+units(harvest(bet)) <- "f"
+load('data/betSS3.RData')
+bet <- window(bet, 1952, 2011)
+harvest[harvest == 0] <- min(harvest[harvest > 0])
+harvest(bet) <- c(harvest)
+stock.n(bet) <- c(stock.n[,-ncol(stock.n)])
+```
+
+```{r, conditioning, echo=FALSE, tidy=TRUE, fig.cap="Conditioning data for Indian Ocean bigeye, 1952-2012.", fig.width=6, fig.height=3, cache=FALSE}
+plot(bet)
+```
+
+
+
+
+## Base model run
 
 ### Population trajectories
 
