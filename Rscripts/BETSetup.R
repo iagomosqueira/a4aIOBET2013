@@ -42,7 +42,16 @@ fmodel <- ~ s(age, k = 4) + s(year, k = 20)
 srmodel <- ~ factor(year)
 n1model <- ~ factor(age)
 qmodel <- list(~ s(age, k=4))
-if (biomass) qmodel <- list(~ 1)
+if (biomass) {
+  a50 <- 4
+  a90 <- 5
+
+  a <- log(1/9) * a50 / (a90 - a50)
+  b <- - a / a50
+  fixedq <- 1/(1 + exp(-a - b*ages))
+  
+  qmodel <- list( ~ 1 )
+}
 
 # design matrices
 require(FLa4a)

@@ -3,29 +3,44 @@
 #library(devtools)
 #install_github("FLa4a", "colinpmillar")
 
+library(FLa4a)
+source("setupSimulation.R")
+source("simulation.R")
+
+
+
 # select a setup option
 
+load('../data/bet_iotc_2011.RData')
+range(bet)[c("minfbar","maxfbar")] <- c(4,9)
+units(harvest(bet)) <- "f"
+load('../data/betSS3.RData')
+bet <- window(bet, 1952, 2011)
+harvest[harvest == 0] <- min(harvest[harvest > 0])
+harvest(bet) <- c(harvest)
+stock.n(bet) <- c(stock.n[,-ncol(stock.n)])
 
-
-#source("simpleSetup.R")
-qtype <- "dome"
-#qtype <- "logistic"
-#qtype <- "flat"
-
-source("BETSetup.R")
-
-nsim <- 10
 biomass <- TRUE
 
+fmodel <- ~ s(age, k = 4) + s(year, k = 20)
+srmodel <- ~ factor(year)
+n1model <- ~ factor(age)
+qmodel <- list(~ 1)
+
+sim <- setupStock(fmodel, srmodel, n1model, bet)
+sim <- c(sim, setupIndices(sim $ stock, biomass, qtype = "flat"))
+
+args <- c(sim, list(nsim = 10))
+# overwrite qmodel to fit with something different than was used to sim
+args $ qmodel <- qmodel
+
 # run simulations
-source("simulation.R")
+sims <- do.call(doSimulation, args)
 
 head(sims)
 
 #print(bwplot(sdiff ~ parname | type, data = sims, scales = list(relation = "free")))
 
-
-require(FLa4a)
 
 par(mfrow = c(2,2))
 

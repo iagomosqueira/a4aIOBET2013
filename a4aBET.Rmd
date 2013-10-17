@@ -1,18 +1,18 @@
 % Assessing the ability to estimate stock status of Indian Ocean Bigeye tuna using the a4a statistical catch-at-age assessment method.
-% Iago Mosqueira$^\dagger$[^contact]; Colin P. Millar[^aff]
+% Iago Mosqueira[^contact]; Colin P. Millar[^aff]
 % October 2013
 
 
 [^aff]: European Commission, Joint Research Center, IPSC/Maritime Affairs Unit, FISHREG, Via E. Fermi 2749, 21027 Ispra VA, Italy
 [^contact]: Contact Author: iago.mosqueira-sanchez@jrc.ec.europa.eu
 
-```{r, setup, echo=FALSE, results='hide', message=FALSE, cache=FALSE, warnings=FALSE}
+```{r, setup, echo=FALSE, results='hide', message=FALSE, cache=FALSE, warning=FALSE}
 library(knitr)
-opts_chunk$set(dev='pdf', fig.width=4, fig.height=4, warnings=FALSE, cache=TRUE, echo=FALSE)
+opts_chunk$set(dev='pdf', fig.width=4, fig.height=4, warning=FALSE, cache=TRUE, echo=FALSE)
 options(width=50)
 ```
 
-```{r, pkgs, echo=FALSE, results='hide', message=FALSE, warnings=FALSE}
+```{r, pkgs, echo=FALSE, results='hide', message=FALSE}
 library(FLa4a)
 library(ggplotFL)
 theme_set(theme_bw())
