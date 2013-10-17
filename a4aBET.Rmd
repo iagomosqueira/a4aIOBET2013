@@ -56,11 +56,17 @@ in which $W_{ay}$ is the stock weight at age and year. The variance of the relat
 
 It is possible to provide some internal structure to the population model in the form of a stock recruit relationship in which recruits are considered to be related to previous biomass
 
-$$ \exp\{ E[ \log N_{a_0,y} ] \} = f\left( \sum_a N_{ay} W_{ay} m_{ay} \right) $$
+$$ \exp\{ E[ \log N_{a_0,y} ] \} = f\left( \sum_a N_{a,y-1} W_{a,y-1} m_{a,y-1}, \, \theta \right) $$
 
-where $m$ is the maturity, assumed known, and $f(.)$ is a function such as the ricker or beverton and holt stock rectuit relationship.
+where $m$ is the maturity, assumed known, and $f(.)$ is a function such as the ricker or beverton and holt stock rectuit relationship with parameters $\theta$.
 
 ![Simulation results for a big eye Tuna like stock with age based indices.](figures/run1.pdf "Title")
+
+## Implementation
+
+The models presented above are the basis for many stock assessment models. Often the difference between models is the way in which the individual quantities are modelled.  Catchability is often modelled as a parametric function such as a scaled logistic or a scaled double normal. In a4a linear and additive formulas on the log scale are used in place of parametric forms. To give a concrete example, to model a seperable fishing mortality in a4a the user specifies log F $\sim$ age + year.  Where '$\sim$' should be read 'is modelled as', and, here, age and year are catagorical variables. Splines may also be used to model selectivity over age and/or year, for example a seperable model with fewer parameters than the aforementioned is log F $\sim$ s(age) + s(year). Similarly catchability at age can be modelled using splines: log F $\sim$ s(age), fits a spline for survey catchability.
+
+Splines are the main tool for reducing parameterisation in a4a. For reasons of efficiency the use of random effects have been avoided and the user is required to specify the degrees of freedom of the splines.
 
 # Data
 
