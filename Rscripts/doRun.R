@@ -20,19 +20,17 @@ harvest[harvest == 0] <- min(harvest[harvest > 0])
 harvest(bet) <- c(harvest)
 stock.n(bet) <- c(stock.n[,-ncol(stock.n)])
 
-biomass <- TRUE
 
 fmodel <- ~ s(age, k = 4) + s(year, k = 20)
 srmodel <- ~ factor(year)
 n1model <- ~ factor(age)
-qmodel <- list(~ 1)
+qmodel <- list(~ s(age, k = 4))
 
 sim <- setupStock(fmodel, srmodel, n1model, bet)
-sim <- c(sim, setupIndices(sim $ stock, biomass, qtype = "flat"))
-
+sim <- c(sim, setupIndices(sim $ stock, biomass = TRUE, qtype = "logistic"))
 args <- c(sim, list(nsim = 10))
 # overwrite qmodel to fit with something different than was used to sim
-args $ qmodel <- qmodel
+args $ qmodel <- list(~ 1)
 
 # run simulations
 sims <- do.call(doSimulation, args)

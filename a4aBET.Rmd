@@ -130,15 +130,17 @@ The use of a biomass survey in FLa4a as an observation of stock abundance is bei
 
 - given the parameter values defined in the previous point, 1000 data sets were simulated and the a4a model fitted to each. The model setup in the fitting was exactly that used to simulate the data.
 
-- finally the model estimates of catchability at age, recruitment, Fbar and F-at-age in the final year are plotted along with the values used to simulate the observations.
+- finally the model estimates of catchability at age, recruitment, Fbar and F-at-age in the final year are compared with the values used to simulate the observations.
 
 ## Base run
+
+The base run follows the same model structure as previously described, using a fixed form logistic for the selectivity of the biomass survey indices.
 
 # Results
 
 ## Simulation to test the estimation of survey catchability
 
-```{r, simulation, echo=FALSE, results='hide', message=FALSE, cache=FALSE}
+```{r, conditioning, echo=FALSE, results='hide', message=FALSE, cache=FALSE}
 range(bet)[c("minfbar","maxfbar")] <- c(4,9)
 units(harvest(bet)) <- "f"
 load('data/betSS3.RData')
@@ -148,10 +150,25 @@ harvest(bet) <- c(harvest)
 stock.n(bet) <- c(stock.n[,-ncol(stock.n)])
 ```
 
-```{r, conditioning, echo=FALSE, tidy=TRUE, fig.cap="Conditioning data for Indian Ocean bigeye, 1952-2012.", fig.width=6, fig.height=3, cache=FALSE}
+```{r, conditioningdata, echo=FALSE, tidy=TRUE, fig.cap="Conditioning data 1952-2012.", fig.width=6, fig.height=3, cache=FALSE}
 plot(bet)
 ```
 
+```{r, simulation, echo=FALSE, results='hide', message=FALSE, cache=FALSE}
+fmodel <- ~ s(age, k = 4) + s(year, k = 20)
+srmodel <- ~ factor(year)
+n1model <- ~ factor(age)
+qmodel <- list(~ s(age, k = 4))
+sim <- setupStock(fmodel, srmodel, n1model, bet)
+sim <- c(sim, setupIndices(sim $ stock, biomass = TRUE, qtype = "logistic"))
+args <- c(sim, list(nsim = 10))
+# overwrite qmodel to fit with something different than was used to sim
+args $ qmodel <- list(~ 1)
+```
+
+```{r, doSimulation, echo=FALSE, results='hide', message=FALSE, cache=TRUE}
+sims <- do.call(doSimulation, args)
+```
 
 
 
